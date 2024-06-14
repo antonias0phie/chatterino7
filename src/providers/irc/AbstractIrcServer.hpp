@@ -98,7 +98,8 @@ protected:
     virtual void onReadConnected(IrcConnection *connection);
     virtual void onWriteConnected(IrcConnection *connection);
     virtual void onDisconnected();
-    void markChannelsConnected();
+    void markChannelsConnected(
+        std::chrono::time_point<std::chrono::system_clock> ts);
 
     virtual std::shared_ptr<Channel> getCustomChannel(
         const QString &channelName);

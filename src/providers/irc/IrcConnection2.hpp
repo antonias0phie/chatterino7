@@ -6,6 +6,8 @@
 #include <pajlada/signals/signal.hpp>
 #include <QTimer>
 
+#include <chrono>
+
 namespace chatterino {
 
 class IrcConnection : public Communi::IrcConnection
@@ -20,7 +22,8 @@ public:
     pajlada::Signals::Signal<bool> connectionLost;
 
     // Signal to indicate the connection is still healthy
-    pajlada::Signals::NoArgSignal heartbeat;
+    pajlada::Signals::Signal<std::chrono::time_point<std::chrono::system_clock>>
+        heartbeat;
 
     // Request a reconnect with a minimum interval between attempts.
     // This won't violate RECONNECT_MIN_INTERVAL
@@ -33,6 +36,7 @@ private:
     QTimer pingTimer_;
     QTimer reconnectTimer_;
     std::atomic<bool> recentlyReceivedMessage_{true};
+    std::chrono::time_point<std::chrono::system_clock> lastRecvMessage_;
 
     // Reconnect with a base delay of 1 second and max out at 1 second * (2^(5-1)) (i.e. 16 seconds)
     ExponentialBackoff<5> reconnectBackoff_{std::chrono::milliseconds{1000}};

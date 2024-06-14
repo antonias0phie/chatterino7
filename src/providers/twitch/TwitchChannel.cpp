@@ -1191,16 +1191,16 @@ bool TwitchChannel::setLive(bool newLiveStatus)
     return true;
 }
 
-void TwitchChannel::markConnected()
+void TwitchChannel::markConnected(
+    std::chrono::time_point<std::chrono::system_clock> ts)
 {
     if (this->lastConnectedAt_.has_value() && !this->disconnected_)
     {
-        this->lastConnectedAt_ = std::chrono::system_clock::now();
+        this->lastConnectedAt_ = ts;
         qCDebug(chatterinoRecentMessages)
             << this->getName() << "markConnected"
             << QDateTime::fromStdTimePoint(
-                   std::chrono::time_point_cast<std::chrono::milliseconds>(
-                       *this->lastConnectedAt_));
+                   std::chrono::time_point_cast<std::chrono::milliseconds>(ts));
     }
 }
 

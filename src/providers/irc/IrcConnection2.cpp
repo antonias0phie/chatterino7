@@ -65,7 +65,7 @@ IrcConnection::IrcConnection(QObject *parent)
                 this->recentlyReceivedMessage_ = false;
                 this->waitingForPong_ = false;
                 qCDebug(chatterinoIrc) << "pingTimer";
-                this->heartbeat.invoke();
+                this->heartbeat.invoke(this->lastRecvMessage_);
                 return;
             }
 
@@ -100,8 +100,10 @@ IrcConnection::IrcConnection(QObject *parent)
                      [this](Communi::IrcMessage *message) {
                          qCDebug(chatterinoIrc)
                              << "Communi::IrcConnection::messageReceived"
-                             << message->command();
+                             << message->command() << message->timeStamp();
                          this->recentlyReceivedMessage_ = true;
+                         this->lastRecvMessage_ =
+                             message->timeStamp().toStdSysMilliseconds();
 
                          if (message->command() == "372")  // MOTD
                          {

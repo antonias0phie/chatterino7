@@ -154,7 +154,7 @@ public:
     /**
      * Records that the channel's read connection is healthy.
      */
-    void markConnected();
+    void markConnected(std::chrono::time_point<std::chrono::system_clock> ts);
 
     // Emotes
     std::optional<EmotePtr> bttvEmote(const EmoteName &name) const;

@@ -85,9 +85,10 @@ AbstractIrcServer::AbstractIrcServer()
             }
             this->readConnection_->smartReconnect();
         });
-    this->connections_.managedConnect(this->readConnection_->heartbeat, [this] {
-        this->markChannelsConnected();
-    });
+    this->connections_.managedConnect(this->readConnection_->heartbeat,
+                                      [this](auto ts) {
+                                          this->markChannelsConnected(ts);
+                                      });
 }
 
 void AbstractIrcServer::initializeIrc()
@@ -366,12 +367,13 @@ void AbstractIrcServer::onDisconnected()
     }
 }
 
-void AbstractIrcServer::markChannelsConnected()
+void AbstractIrcServer::markChannelsConnected(
+    std::chrono::time_point<std::chrono::system_clock> ts)
 {
     this->forEachChannel([](const ChannelPtr &chan) {
         if (auto *channel = dynamic_cast<TwitchChannel *>(chan.get()))
         {
-            channel->markConnected();
+            channel->markConnected(ts);
         }
     });
 }
