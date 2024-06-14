@@ -64,6 +64,7 @@ IrcConnection::IrcConnection(QObject *parent)
                 // If we're still receiving messages, all is well
                 this->recentlyReceivedMessage_ = false;
                 this->waitingForPong_ = false;
+                qCDebug(chatterinoIrc) << "pingTimer";
                 this->heartbeat.invoke();
                 return;
             }
@@ -97,6 +98,9 @@ IrcConnection::IrcConnection(QObject *parent)
 
     QObject::connect(this, &Communi::IrcConnection::messageReceived,
                      [this](Communi::IrcMessage *message) {
+                         qCDebug(chatterinoIrc)
+                             << "Communi::IrcConnection::messageReceived"
+                             << message->command();
                          this->recentlyReceivedMessage_ = true;
 
                          if (message->command() == "372")  // MOTD

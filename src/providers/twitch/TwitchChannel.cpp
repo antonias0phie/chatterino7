@@ -1196,6 +1196,11 @@ void TwitchChannel::markConnected()
     if (this->lastConnectedAt_.has_value() && !this->disconnected_)
     {
         this->lastConnectedAt_ = std::chrono::system_clock::now();
+        qCDebug(chatterinoRecentMessages)
+            << this->getName() << "markConnected"
+            << QDateTime::fromStdTimePoint(
+                   std::chrono::time_point_cast<std::chrono::milliseconds>(
+                       *this->lastConnectedAt_));
     }
 }
 
@@ -1294,6 +1299,11 @@ void TwitchChannel::loadRecentMessagesReconnect()
     int limit = getSettings()->twitchMessageHistoryLimit.getValue();
     if (this->lastConnectedAt_.has_value())
     {
+        qCDebug(chatterinoRecentMessages)
+            << this->getName() << "loadRecentMessagesReconnect"
+            << QDateTime::fromStdTimePoint(
+                   std::chrono::time_point_cast<std::chrono::milliseconds>(
+                       *this->lastConnectedAt_));
         // calculate how many messages could have occured
         // while we were not connected to the channel
         // assuming a maximum of 10 messages per second
@@ -1304,6 +1314,8 @@ void TwitchChannel::loadRecentMessagesReconnect()
         limit =
             std::min(static_cast<int>(secondsSinceDisconnect + 1) * 10, limit);
     }
+    qCDebug(chatterinoRecentMessages)
+        << this->getName() << "loadRecentMessagesReconnect limit:" << limit;
 
     auto weak = weakOf<Channel>(this);
     recentmessages::load(
