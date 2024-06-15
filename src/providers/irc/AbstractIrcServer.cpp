@@ -370,7 +370,7 @@ void AbstractIrcServer::onDisconnected()
 void AbstractIrcServer::markChannelsConnected(
     std::chrono::time_point<std::chrono::system_clock> ts)
 {
-    this->forEachChannel([](const ChannelPtr &chan) {
+    this->forEachChannel([ts](const ChannelPtr &chan) {
         if (auto *channel = dynamic_cast<TwitchChannel *>(chan.get()))
         {
             channel->markConnected(ts);
