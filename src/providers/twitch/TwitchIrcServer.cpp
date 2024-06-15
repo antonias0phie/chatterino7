@@ -325,7 +325,7 @@ void TwitchIrcServer::readConnectionMessageReceived(
     {
         this->addGlobalSystemMessage(
             "Twitch Servers requested us to reconnect, reconnecting");
-        this->markChannelsConnected();
+        this->markChannelsConnected(std::chrono::system_clock::now());
         this->connect();
     }
     else if (command == "GLOBALUSERSTATE")
