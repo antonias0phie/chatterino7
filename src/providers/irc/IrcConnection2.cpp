@@ -3,6 +3,10 @@
 #include "common/QLogging.hpp"
 #include "common/Version.hpp"
 
+#include <chrono>
+
+using namespace std::chrono_literals;
+
 namespace chatterino {
 
 namespace {
@@ -65,7 +69,16 @@ IrcConnection::IrcConnection(QObject *parent)
                 this->recentlyReceivedMessage_ = false;
                 this->waitingForPong_ = false;
                 qCDebug(chatterinoIrc) << "pingTimer";
-                this->heartbeat.invoke(this->lastRecvMessage_);
+                auto now = std::chrono::system_clock::now();
+                if (now - this->lastPing_ < 2 * 5000ms)
+                {
+                    this->heartbeat.invoke(this->lastRecvMessage_);
+                }
+                else
+                {
+                    qCDebug(chatterinoIrc) << "no ping!";
+                }
+                this->lastPing_ = now;
                 return;
             }
 

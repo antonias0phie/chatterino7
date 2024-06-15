@@ -37,6 +37,7 @@ private:
     QTimer reconnectTimer_;
     std::atomic<bool> recentlyReceivedMessage_{true};
     std::chrono::time_point<std::chrono::system_clock> lastRecvMessage_;
+    std::chrono::time_point<std::chrono::system_clock> lastPing_;
 
     // Reconnect with a base delay of 1 second and max out at 1 second * (2^(5-1)) (i.e. 16 seconds)
     ExponentialBackoff<5> reconnectBackoff_{std::chrono::milliseconds{1000}};
